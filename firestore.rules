@@ -1,0 +1,72 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isStudent() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'student';
+    }
+    
+    function isCounselor() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'counselor';
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin() || isCounselor());
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow delete: if isAuthenticated() && isAdmin();
+    }
+
+    // Exams collection
+    match /exams/{examId} {
+      allow read: if isAuthenticated() && (isStudent() || isCounselor() || isAdmin());
+      allow create, update: if isAuthenticated() && (isCounselor() || isAdmin());
+      allow delete: if isAuthenticated() && isAdmin();
+    }
+
+    // Results collection
+    match /results/{resultId} {
+      allow read: if isAuthenticated() && (
+        (isStudent() && resource.data.studentId == request.auth.uid) ||
+        isCounselor() || isAdmin()
+      );
+      allow create: if isAuthenticated() && isStudent();
+      allow update, delete: if isAuthenticated() && (isCounselor() || isAdmin());
+    }
+
+    // Questions collection
+    match /questions/{questionId} {
+      allow read: if isAuthenticated() && (isStudent() || isCounselor() || isAdmin());
+      allow write: if isAuthenticated() && (isCounselor() || isAdmin());
+    }
+
+    // User exam level assignments
+    match /user_exam_level/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isCounselor() || isAdmin());
+      allow write: if isAuthenticated() && (isCounselor() || isAdmin());
+    }
+    // Exam state or progress saving
+    match /exam_states/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Participant videos collection for webcam snapshots
+    match /participant_videos/{userId} {
+      allow read: if isAuthenticated() && (isCounselor() || isAdmin());
+      allow write: if isAuthenticated() && request.auth.uid == userId;
+    }
+  }
+}
