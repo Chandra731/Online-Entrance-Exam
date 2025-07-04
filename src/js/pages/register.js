@@ -12,6 +12,10 @@ class RegisterPage {
     this.courseDiv = document.getElementById('courseDiv');
     this.passwordInput = document.getElementById('password');
     this.confirmPasswordInput = document.getElementById('confirmPassword');
+    this.togglePasswordBtn = document.getElementById('togglePassword');
+    this.toggleConfirmPasswordBtn = document.getElementById('toggleConfirmPassword');
+    this.registerBtn = document.getElementById('registerBtn');
+    this.messageContainer = document.getElementById('registerMessage');
     
     this.init();
   }
@@ -32,16 +36,26 @@ class RegisterPage {
   }
 
   setupEventListeners() {
+    // Form submission
     this.form.addEventListener('submit', (e) => this.handleSubmit(e));
     
     // Role change handler
     this.roleSelect.addEventListener('change', () => this.handleRoleChange());
+    
+    // Password toggles
+    this.togglePasswordBtn?.addEventListener('click', () => this.togglePassword('password'));
+    this.toggleConfirmPasswordBtn?.addEventListener('click', () => this.togglePassword('confirmPassword'));
     
     // Real-time validation
     this.nameInput.addEventListener('blur', () => this.validateNameField());
     this.emailInput.addEventListener('blur', () => this.validateEmailField());
     this.passwordInput.addEventListener('blur', () => this.validatePasswordField());
     this.confirmPasswordInput.addEventListener('blur', () => this.validateConfirmPasswordField());
+    
+    // Clear validation on input
+    [this.nameInput, this.emailInput, this.passwordInput, this.confirmPasswordInput].forEach(input => {
+      input.addEventListener('input', () => this.clearFieldValidation(input));
+    });
   }
 
   initializeCourseVisibility() {
@@ -61,6 +75,17 @@ class RegisterPage {
       this.courseSelect.required = false;
       this.courseSelect.value = '';
     }
+  }
+
+  togglePassword(type) {
+    const input = type === 'password' ? this.passwordInput : this.confirmPasswordInput;
+    const btn = type === 'password' ? this.togglePasswordBtn : this.toggleConfirmPasswordBtn;
+    
+    const currentType = input.getAttribute('type') === 'password' ? 'text' : 'password';
+    input.setAttribute('type', currentType);
+    
+    const icon = btn.querySelector('i');
+    icon.className = currentType === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';
   }
 
   validateNameField() {
@@ -124,8 +149,9 @@ class RegisterPage {
   }
 
   toggleFieldValidation(field, isValid, errorMessage) {
-    const feedbackElement = field.parentNode.querySelector('.invalid-feedback') || 
-                           this.createFeedbackElement(field.parentNode);
+    const container = field.closest('.col-md-6') || field.parentNode.parentNode;
+    const feedbackElement = container.querySelector('.invalid-feedback') || 
+                           this.createFeedbackElement(container);
     
     if (isValid) {
       field.classList.remove('is-invalid');
@@ -140,11 +166,35 @@ class RegisterPage {
     }
   }
 
+  clearFieldValidation(field) {
+    field.classList.remove('is-valid', 'is-invalid');
+    const container = field.closest('.col-md-6') || field.parentNode.parentNode;
+    const feedbackElement = container.querySelector('.invalid-feedback');
+    if (feedbackElement) {
+      feedbackElement.style.display = 'none';
+    }
+  }
+
   createFeedbackElement(parent) {
     const feedback = document.createElement('div');
     feedback.className = 'invalid-feedback';
     parent.appendChild(feedback);
     return feedback;
+  }
+
+  setButtonLoading(loading) {
+    const btnText = this.registerBtn.querySelector('.btn-text');
+    const spinner = this.registerBtn.querySelector('.spinner-border');
+    
+    if (loading) {
+      btnText.textContent = 'Creating Account...';
+      spinner.classList.remove('d-none');
+      this.registerBtn.disabled = true;
+    } else {
+      btnText.textContent = 'Create Account';
+      spinner.classList.add('d-none');
+      this.registerBtn.disabled = false;
+    }
   }
 
   async handleSubmit(e) {
@@ -171,35 +221,41 @@ class RegisterPage {
     ];
     
     if (!validations.every(Boolean)) {
-      showAlert('Please fix the errors in the form', 'danger');
+      this.showMessage('Please fix the errors in the form', 'danger');
       return;
     }
 
     try {
-      showLoader(true);
+      this.setButtonLoading(true);
+      this.clearMessage();
       
       // Attempt registration
       const result = await AuthService.register(formData);
       
       if (result.success) {
-        showAlert('Registration successful! You can now login.', 'success');
+        this.showMessage('Registration successful! You can now login.', 'success');
         
         // Reset form
         this.form.reset();
         this.initializeCourseVisibility();
+        
+        // Clear all validations
+        [this.nameInput, this.emailInput, this.passwordInput, this.confirmPasswordInput, this.roleSelect, this.courseSelect].forEach(field => {
+          this.clearFieldValidation(field);
+        });
         
         // Redirect to login page after a delay
         setTimeout(() => {
           window.location.href = ROUTES.LOGIN;
         }, 2000);
       } else {
-        showAlert(result.error, 'danger');
+        this.showMessage(result.error, 'danger');
       }
     } catch (error) {
       console.error('Registration error:', error);
-      showAlert('An unexpected error occurred. Please try again.', 'danger');
+      this.showMessage('An unexpected error occurred. Please try again.', 'danger');
     } finally {
-      showLoader(false);
+      this.setButtonLoading(false);
     }
   }
 
@@ -212,6 +268,21 @@ class RegisterPage {
       window.location.href = ROUTES.DASHBOARD;
     } else if (role === USER_ROLES.STUDENT) {
       window.location.href = ROUTES.EXAM;
+    }
+  }
+
+  showMessage(message, type = 'info') {
+    if (!this.messageContainer) return;
+    
+    this.messageContainer.textContent = message;
+    this.messageContainer.className = `alert alert-${type}`;
+    this.messageContainer.classList.remove('d-none');
+  }
+
+  clearMessage() {
+    if (this.messageContainer) {
+      this.messageContainer.textContent = '';
+      this.messageContainer.classList.add('d-none');
     }
   }
 }

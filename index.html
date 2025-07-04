@@ -6,7 +6,7 @@
   <title>Srinivas University Entrance Exam Portal</title>
   
   <!-- Preload critical resources -->
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
   
   <!-- Meta tags for SEO and social sharing -->
   <meta name="description" content="Official entrance exam portal for Srinivas University. Register, take exams, and track your progress securely online.">
@@ -21,26 +21,41 @@
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="/public/favicon.ico">
   
-  <!-- Stylesheets -->
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="/src/css/main.css">
 </head>
 <body>
   <!-- Skip to main content for accessibility -->
-  <a href="#main-content" class="sr-only">Skip to main content</a>
+  <a href="#main-content" class="visually-hidden-focusable">Skip to main content</a>
 
   <!-- Navigation -->
-  <nav class="navbar" role="navigation" aria-label="Main navigation">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
     <div class="container">
-      <div class="d-flex justify-content-between align-items-center w-100">
-        <a href="/" class="navbar-brand d-flex align-items-center gap-3">
-          <img src="/public/srinivas-logo.png" alt="Srinivas University Logo" width="40" height="40">
-          <span>Srinivas University Exams</span>
-        </a>
-        
-        <ul class="navbar-nav d-flex flex-row gap-4 m-0">
-          <li><a href="/" class="nav-link active" aria-current="page">Home</a></li>
-          <li><a href="/login.html" class="nav-link">Login</a></li>
-          <li><a href="/register.html" class="nav-link">Register</a></li>
+      <a href="/" class="navbar-brand d-flex align-items-center">
+        <img src="https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop" 
+             alt="Srinivas University Logo" width="40" height="40" class="rounded me-2">
+        <span class="fw-bold text-primary">Srinivas University</span>
+      </a>
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto" id="mainNavigation">
+          <li class="nav-item">
+            <a href="/" class="nav-link active">Home</a>
+          </li>
+          <li class="nav-item">
+            <a href="/login.html" class="nav-link">Login</a>
+          </li>
+          <li class="nav-item">
+            <a href="/register.html" class="nav-link">Register</a>
+          </li>
         </ul>
       </div>
     </div>
@@ -49,84 +64,86 @@
   <!-- Main Content -->
   <main id="main-content">
     <!-- Hero Section -->
-    <section class="hero" aria-labelledby="hero-title">
+    <section class="hero-section bg-primary text-white py-5">
       <div class="container">
-        <h1 id="hero-title" class="hero-title">
-          Welcome to Srinivas University Entrance Exam Portal
-        </h1>
-        <p class="hero-subtitle">
-          Access your entrance exams, track your progress, and view your results securely with our modern online examination platform.
-        </p>
-        <div class="hero-actions">
-          <a href="/login.html" class="btn btn-primary btn-lg">
-            Login to Your Account
-          </a>
-          <a href="/register.html" class="btn btn-outline-primary btn-lg">
-            Register Now
-          </a>
+        <div class="row align-items-center min-vh-50">
+          <div class="col-lg-6">
+            <h1 class="display-4 fw-bold mb-4">
+              Welcome to Srinivas University Entrance Exam Portal
+            </h1>
+            <p class="lead mb-4">
+              Access your entrance exams, track your progress, and view your results securely with our modern online examination platform.
+            </p>
+            <div class="d-flex flex-column flex-sm-row gap-3">
+              <a href="/login.html" class="btn btn-light btn-lg px-4">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Login to Your Account
+              </a>
+              <a href="/register.html" class="btn btn-outline-light btn-lg px-4">
+                <i class="bi bi-person-plus me-2"></i>Register Now
+              </a>
+            </div>
+          </div>
+          <div class="col-lg-6 text-center">
+            <img src="https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=600" 
+                 alt="Students taking online exam" class="img-fluid rounded shadow">
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Features Section -->
-    <section class="section" aria-labelledby="features-title">
+    <section class="py-5">
       <div class="container">
-        <h2 id="features-title" class="section-title">
-          Why Choose Our Exam Portal?
-        </h2>
-        <p class="section-subtitle">
-          Experience the future of online examinations with our secure, user-friendly platform designed specifically for Srinivas University students.
-        </p>
+        <div class="text-center mb-5">
+          <h2 class="display-5 fw-bold mb-3">Why Choose Our Exam Portal?</h2>
+          <p class="lead text-muted">
+            Experience the future of online examinations with our secure, user-friendly platform designed specifically for Srinivas University students.
+          </p>
+        </div>
         
-        <div class="card-grid card-grid-md-3">
-          <div class="card card-elevated">
-            <div class="card-body text-center">
-              <div class="mb-4">
-                <div class="d-inline-flex align-items-center justify-content-center" 
-                     style="width: 64px; height: 64px; background-color: var(--primary-100); border-radius: var(--radius-full);">
-                  <svg width="32" height="32" fill="var(--primary-600)" viewBox="0 0 24 24">
-                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
-                  </svg>
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-body text-center p-4">
+                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                     style="width: 64px; height: 64px;">
+                  <i class="bi bi-shield-check text-primary fs-3"></i>
                 </div>
+                <h5 class="card-title fw-bold">Secure & Reliable</h5>
+                <p class="card-text text-muted">
+                  Advanced security measures including webcam monitoring, browser lockdown, and encrypted data transmission ensure exam integrity.
+                </p>
               </div>
-              <h3 class="card-title">Secure & Reliable</h3>
-              <p class="card-text">
-                Advanced security measures including webcam monitoring, browser lockdown, and encrypted data transmission ensure exam integrity.
-              </p>
             </div>
           </div>
 
-          <div class="card card-elevated">
-            <div class="card-body text-center">
-              <div class="mb-4">
-                <div class="d-inline-flex align-items-center justify-content-center" 
-                     style="width: 64px; height: 64px; background-color: var(--success-100); border-radius: var(--radius-full);">
-                  <svg width="32" height="32" fill="var(--success-600)" viewBox="0 0 24 24">
-                    <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>
-                  </svg>
+          <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-body text-center p-4">
+                <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                     style="width: 64px; height: 64px;">
+                  <i class="bi bi-clock text-success fs-3"></i>
                 </div>
+                <h5 class="card-title fw-bold">Real-Time Monitoring</h5>
+                <p class="card-text text-muted">
+                  Track your exam progress with live timers, question navigation, and automatic state saving for uninterrupted examination experience.
+                </p>
               </div>
-              <h3 class="card-title">Real-Time Monitoring</h3>
-              <p class="card-text">
-                Track your exam progress with live timers, question navigation, and automatic state saving for uninterrupted examination experience.
-              </p>
             </div>
           </div>
 
-          <div class="card card-elevated">
-            <div class="card-body text-center">
-              <div class="mb-4">
-                <div class="d-inline-flex align-items-center justify-content-center" 
-                     style="width: 64px; height: 64px; background-color: var(--warning-100); border-radius: var(--radius-full);">
-                  <svg width="32" height="32" fill="var(--warning-600)" viewBox="0 0 24 24">
-                    <path d="M9 11H7v6h2v-6zm4 0h-2v6h2v-6zm4 0h-2v6h2v-6zm2-7h-3V2h-2v2H8V2H6v2H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H3V8h14v12z"/>
-                  </svg>
+          <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-body text-center p-4">
+                <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                     style="width: 64px; height: 64px;">
+                  <i class="bi bi-graph-up text-warning fs-3"></i>
                 </div>
+                <h5 class="card-title fw-bold">Instant Results</h5>
+                <p class="card-text text-muted">
+                  Receive immediate feedback upon exam completion with detailed performance analytics available to counselors and administrators.
+                </p>
               </div>
-              <h3 class="card-title">Instant Results</h3>
-              <p class="card-text">
-                Receive immediate feedback upon exam completion with detailed performance analytics available to counselors and administrators.
-              </p>
             </div>
           </div>
         </div>
@@ -134,50 +151,54 @@
     </section>
 
     <!-- How It Works Section -->
-    <section class="section" style="background-color: var(--bg-primary);" aria-labelledby="process-title">
+    <section class="py-5 bg-light">
       <div class="container">
-        <h2 id="process-title" class="section-title">
-          How It Works
-        </h2>
+        <div class="text-center mb-5">
+          <h2 class="display-5 fw-bold mb-3">How It Works</h2>
+        </div>
         
-        <div class="row gap-6">
+        <div class="row g-4">
           <div class="col-md-6 col-lg-3">
             <div class="text-center">
-              <div class="mb-4">
-                <span class="badge badge-solid-primary" style="width: 48px; height: 48px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: var(--font-size-xl); font-weight: var(--font-weight-bold);">1</span>
+              <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                   style="width: 60px; height: 60px;">
+                <span class="fs-4 fw-bold">1</span>
               </div>
-              <h4 class="mb-3">Register</h4>
-              <p class="text-secondary">Create your account by providing your details and selecting your course of interest.</p>
+              <h5 class="fw-bold mb-3">Register</h5>
+              <p class="text-muted">Create your account by providing your details and selecting your course of interest.</p>
             </div>
           </div>
           
           <div class="col-md-6 col-lg-3">
             <div class="text-center">
-              <div class="mb-4">
-                <span class="badge badge-solid-primary" style="width: 48px; height: 48px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: var(--font-size-xl); font-weight: var(--font-weight-bold);">2</span>
+              <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                   style="width: 60px; height: 60px;">
+                <span class="fs-4 fw-bold">2</span>
               </div>
-              <h4 class="mb-3">Get Approved</h4>
-              <p class="text-secondary">Wait for counselor approval and exam level assignment based on your course selection.</p>
+              <h5 class="fw-bold mb-3">Get Approved</h5>
+              <p class="text-muted">Wait for counselor approval and exam level assignment based on your course selection.</p>
             </div>
           </div>
           
           <div class="col-md-6 col-lg-3">
             <div class="text-center">
-              <div class="mb-4">
-                <span class="badge badge-solid-primary" style="width: 48px; height: 48px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: var(--font-size-xl); font-weight: var(--font-weight-bold);">3</span>
+              <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                   style="width: 60px; height: 60px;">
+                <span class="fs-4 fw-bold">3</span>
               </div>
-              <h4 class="mb-3">Take Exam</h4>
-              <p class="text-secondary">Login and take your assigned entrance exam with our secure, monitored environment.</p>
+              <h5 class="fw-bold mb-3">Take Exam</h5>
+              <p class="text-muted">Login and take your assigned entrance exam with our secure, monitored environment.</p>
             </div>
           </div>
           
           <div class="col-md-6 col-lg-3">
             <div class="text-center">
-              <div class="mb-4">
-                <span class="badge badge-solid-primary" style="width: 48px; height: 48px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: var(--font-size-xl); font-weight: var(--font-weight-bold);">4</span>
+              <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                   style="width: 60px; height: 60px;">
+                <span class="fs-4 fw-bold">4</span>
               </div>
-              <h4 class="mb-3">View Results</h4>
-              <p class="text-secondary">Access your results and performance analytics through your counselor dashboard.</p>
+              <h5 class="fw-bold mb-3">View Results</h5>
+              <p class="text-muted">Access your results and performance analytics through your counselor dashboard.</p>
             </div>
           </div>
         </div>
@@ -185,20 +206,18 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="section" style="background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%); color: white;" aria-labelledby="cta-title">
+    <section class="py-5 bg-primary text-white">
       <div class="container text-center">
-        <h2 id="cta-title" class="section-title" style="color: white;">
-          Ready to Start Your Journey?
-        </h2>
-        <p class="section-subtitle" style="color: rgba(255, 255, 255, 0.9);">
+        <h2 class="display-5 fw-bold mb-3">Ready to Start Your Journey?</h2>
+        <p class="lead mb-4">
           Join thousands of students who have successfully taken their entrance exams through our platform.
         </p>
-        <div class="d-flex gap-4 justify-content-center flex-wrap">
-          <a href="/register.html" class="btn btn-primary btn-lg" style="background-color: white; color: var(--primary-600); border-color: white;">
-            Register Now
+        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+          <a href="/register.html" class="btn btn-light btn-lg px-4">
+            <i class="bi bi-person-plus me-2"></i>Register Now
           </a>
-          <a href="/login.html" class="btn btn-outline-primary btn-lg" style="border-color: white; color: white;">
-            Login to Continue
+          <a href="/login.html" class="btn btn-outline-light btn-lg px-4">
+            <i class="bi bi-box-arrow-in-right me-2"></i>Login to Continue
           </a>
         </div>
       </div>
@@ -206,13 +225,13 @@
   </main>
 
   <!-- Footer -->
-  <footer class="footer" role="contentinfo">
-    <div class="container">
-      <p class="m-0">&copy; 2025 Srinivas University. All rights reserved.</p>
+  <footer class="bg-dark text-white py-4">
+    <div class="container text-center">
+      <p class="mb-0">&copy; 2025 Srinivas University. All rights reserved.</p>
     </div>
   </footer>
 
-  <!-- Scripts -->
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom JS -->
   <script type="module" src="/src/js/pages/home.js"></script>
-</body>
-</html>
