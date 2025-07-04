@@ -2,139 +2,217 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Srinivas University Entrance Exam Portal</title>
   
-  <!-- Bootstrap CSS CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- Google Fonts for clean typography -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
-  <!-- Custom Styles -->
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-    }
-    .hero-section {
-      background: url('public/hero-background.jpg') center center / cover no-repeat;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      color: #fff;
-      text-align: center;
-    }
-    .hero-section::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      z-index: 1;
-    }
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      max-width: 700px;
-    }
-    .navbar-brand img {
-      max-height: 40px;
-      margin-right: 10px;
-    }
-    footer {
-      font-size: 0.9rem;
-    }
-  </style>
+  <!-- Preload critical resources -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style">
+  
+  <!-- Meta tags for SEO and social sharing -->
+  <meta name="description" content="Official entrance exam portal for Srinivas University. Register, take exams, and track your progress securely online.">
+  <meta name="keywords" content="Srinivas University, entrance exam, online exam, education, university admission">
+  <meta name="author" content="Srinivas University">
+  
+  <!-- Open Graph tags -->
+  <meta property="og:title" content="Srinivas University Entrance Exam Portal">
+  <meta property="og:description" content="Official entrance exam portal for Srinivas University">
+  <meta property="og:type" content="website">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/public/favicon.ico">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/src/css/main.css">
 </head>
 <body>
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container px-4">
-      <a class="navbar-brand d-flex align-items-center" href="index.html">
-        <img src="public/srinivas-logo.png" alt="Srinivas University Logo" />
-        Srinivas University Exams
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link active" href="index.html">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="login.html">Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="register.html">Register</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="dashboard.html">Dashboard</a>
-          </li>
+  <!-- Skip to main content for accessibility -->
+  <a href="#main-content" class="sr-only">Skip to main content</a>
+
+  <!-- Navigation -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center w-100">
+        <a href="/" class="navbar-brand d-flex align-items-center gap-3">
+          <img src="/public/srinivas-logo.png" alt="Srinivas University Logo" width="40" height="40">
+          <span>Srinivas University Exams</span>
+        </a>
+        
+        <ul class="navbar-nav d-flex flex-row gap-4 m-0">
+          <li><a href="/" class="nav-link active" aria-current="page">Home</a></li>
+          <li><a href="/login.html" class="nav-link">Login</a></li>
+          <li><a href="/register.html" class="nav-link">Register</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="hero-section">
-    <div class="container hero-content">
-      <h1 class="display-5 fw-bold mb-3">
-        Welcome to Srinivas University Entrance Exam Portal
-      </h1>
-      <p class="lead mb-4">
-        Access your entrance exams, track your progress, and view your results securely.
-      </p>
-      <div class="d-flex justify-content-center gap-3">
-        <a href="login.html" class="btn btn-primary btn-lg">Login</a>
-        <a href="register.html" class="btn btn-outline-light btn-lg">Register</a>
+  <!-- Main Content -->
+  <main id="main-content">
+    <!-- Hero Section -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container">
+        <h1 id="hero-title" class="hero-title">
+          Welcome to Srinivas University Entrance Exam Portal
+        </h1>
+        <p class="hero-subtitle">
+          Access your entrance exams, track your progress, and view your results securely with our modern online examination platform.
+        </p>
+        <div class="hero-actions">
+          <a href="/login.html" class="btn btn-primary btn-lg">
+            Login to Your Account
+          </a>
+          <a href="/register.html" class="btn btn-outline-primary btn-lg">
+            Register Now
+          </a>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Info Section -->
-  <section class="py-5">
-    <div class="container">
-      <h2 class="text-center fw-bold mb-4">About the Entrance Exam Portal</h2>
-      <p class="text-center text-muted mb-4">
-        This portal is designed for prospective students of Srinivas University to register and appear for their entrance exams online.
-      </p>
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="border p-4 h-100 text-center">
-            <h5 class="fw-bold">Secure Login</h5>
-            <p class="text-muted">
-              Your credentials and exam data are protected with advanced encryption and security measures.
-            </p>
+    <!-- Features Section -->
+    <section class="section" aria-labelledby="features-title">
+      <div class="container">
+        <h2 id="features-title" class="section-title">
+          Why Choose Our Exam Portal?
+        </h2>
+        <p class="section-subtitle">
+          Experience the future of online examinations with our secure, user-friendly platform designed specifically for Srinivas University students.
+        </p>
+        
+        <div class="card-grid card-grid-md-3">
+          <div class="card card-elevated">
+            <div class="card-body text-center">
+              <div class="mb-4">
+                <div class="d-inline-flex align-items-center justify-content-center" 
+                     style="width: 64px; height: 64px; background-color: var(--primary-100); border-radius: var(--radius-full);">
+                  <svg width="32" height="32" fill="var(--primary-600)" viewBox="0 0 24 24">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                  </svg>
+                </div>
+              </div>
+              <h3 class="card-title">Secure & Reliable</h3>
+              <p class="card-text">
+                Advanced security measures including webcam monitoring, browser lockdown, and encrypted data transmission ensure exam integrity.
+              </p>
+            </div>
           </div>
-        </div>
-        <div class="col-md-4">
-          <div class="border p-4 h-100 text-center">
-            <h5 class="fw-bold">Real-Time Progress</h5>
-            <p class="text-muted">
-              Monitor your test progress and completion status instantly from your dashboard.
-            </p>
+
+          <div class="card card-elevated">
+            <div class="card-body text-center">
+              <div class="mb-4">
+                <div class="d-inline-flex align-items-center justify-content-center" 
+                     style="width: 64px; height: 64px; background-color: var(--success-100); border-radius: var(--radius-full);">
+                  <svg width="32" height="32" fill="var(--success-600)" viewBox="0 0 24 24">
+                    <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>
+                  </svg>
+                </div>
+              </div>
+              <h3 class="card-title">Real-Time Monitoring</h3>
+              <p class="card-text">
+                Track your exam progress with live timers, question navigation, and automatic state saving for uninterrupted examination experience.
+              </p>
+            </div>
           </div>
-        </div>
-        <div class="col-md-4">
-          <div class="border p-4 h-100 text-center">
-            <h5 class="fw-bold">Instant Results</h5>
-            <p class="text-muted">
-              Receive your entrance exam results as soon as you finish your test, with full transparency.
-            </p>
+
+          <div class="card card-elevated">
+            <div class="card-body text-center">
+              <div class="mb-4">
+                <div class="d-inline-flex align-items-center justify-content-center" 
+                     style="width: 64px; height: 64px; background-color: var(--warning-100); border-radius: var(--radius-full);">
+                  <svg width="32" height="32" fill="var(--warning-600)" viewBox="0 0 24 24">
+                    <path d="M9 11H7v6h2v-6zm4 0h-2v6h2v-6zm4 0h-2v6h2v-6zm2-7h-3V2h-2v2H8V2H6v2H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H3V8h14v12z"/>
+                  </svg>
+                </div>
+              </div>
+              <h3 class="card-title">Instant Results</h3>
+              <p class="card-text">
+                Receive immediate feedback upon exam completion with detailed performance analytics available to counselors and administrators.
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="section" style="background-color: var(--bg-primary);" aria-labelledby="process-title">
+      <div class="container">
+        <h2 id="process-title" class="section-title">
+          How It Works
+        </h2>
+        
+        <div class="row gap-6">
+          <div class="col-md-6 col-lg-3">
+            <div class="text-center">
+              <div class="mb-4">
+                <span class="badge badge-solid-primary" style="width: 48px; height: 48px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: var(--font-size-xl); font-weight: var(--font-weight-bold);">1</span>
+              </div>
+              <h4 class="mb-3">Register</h4>
+              <p class="text-secondary">Create your account by providing your details and selecting your course of interest.</p>
+            </div>
+          </div>
+          
+          <div class="col-md-6 col-lg-3">
+            <div class="text-center">
+              <div class="mb-4">
+                <span class="badge badge-solid-primary" style="width: 48px; height: 48px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: var(--font-size-xl); font-weight: var(--font-weight-bold);">2</span>
+              </div>
+              <h4 class="mb-3">Get Approved</h4>
+              <p class="text-secondary">Wait for counselor approval and exam level assignment based on your course selection.</p>
+            </div>
+          </div>
+          
+          <div class="col-md-6 col-lg-3">
+            <div class="text-center">
+              <div class="mb-4">
+                <span class="badge badge-solid-primary" style="width: 48px; height: 48px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: var(--font-size-xl); font-weight: var(--font-weight-bold);">3</span>
+              </div>
+              <h4 class="mb-3">Take Exam</h4>
+              <p class="text-secondary">Login and take your assigned entrance exam with our secure, monitored environment.</p>
+            </div>
+          </div>
+          
+          <div class="col-md-6 col-lg-3">
+            <div class="text-center">
+              <div class="mb-4">
+                <span class="badge badge-solid-primary" style="width: 48px; height: 48px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: var(--font-size-xl); font-weight: var(--font-weight-bold);">4</span>
+              </div>
+              <h4 class="mb-3">View Results</h4>
+              <p class="text-secondary">Access your results and performance analytics through your counselor dashboard.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section" style="background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%); color: white;" aria-labelledby="cta-title">
+      <div class="container text-center">
+        <h2 id="cta-title" class="section-title" style="color: white;">
+          Ready to Start Your Journey?
+        </h2>
+        <p class="section-subtitle" style="color: rgba(255, 255, 255, 0.9);">
+          Join thousands of students who have successfully taken their entrance exams through our platform.
+        </p>
+        <div class="d-flex gap-4 justify-content-center flex-wrap">
+          <a href="/register.html" class="btn btn-primary btn-lg" style="background-color: white; color: var(--primary-600); border-color: white;">
+            Register Now
+          </a>
+          <a href="/login.html" class="btn btn-outline-primary btn-lg" style="border-color: white; color: white;">
+            Login to Continue
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <!-- Footer -->
-  <footer class="text-center py-4 bg-primary text-white">
-    &copy; 2025 Srinivas University. All rights reserved.
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <p class="m-0">&copy; 2025 Srinivas University. All rights reserved.</p>
+    </div>
   </footer>
 
-  <!-- Bootstrap JS Bundle -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Scripts -->
+  <script type="module" src="/src/js/pages/home.js"></script>
 </body>
 </html>
