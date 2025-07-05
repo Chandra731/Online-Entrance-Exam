@@ -26,7 +26,9 @@ class ExamPage {
       sectionList: [],
       isActive: false,
       warningCount: 0,
-      webcamReady: false
+      webcamReady: false,
+      isSubmitting: false,
+      sectionStartTime: null
     };
 
     this.components = {
@@ -103,7 +105,7 @@ class ExamPage {
       questionNumber: document.getElementById('questionNumber'),
       questionText: document.getElementById('questionText'),
       optionsForm: document.getElementById('optionsForm'),
-      progressBar: document.querySelector('.exam-progress-bar'),
+      progressBar: document.getElementById('examProgressBar'),
 
       // Navigation elements
       prevBtn: document.getElementById('prevBtn'),
@@ -309,6 +311,7 @@ class ExamPage {
       }
 
       this.examState.isActive = true;
+      this.examState.sectionStartTime = Date.now();
       
       // Hide guidelines modal
       const modal = bootstrap.Modal.getInstance(this.elements.guidelinesModal);
@@ -394,20 +397,22 @@ class ExamPage {
 
     if (isLastQuestionInSection) {
       if (isLastSection) {
-        this.elements.nextBtn.textContent = 'Submit Exam';
+        this.elements.nextBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Submit Exam';
         this.elements.submitBtn.classList.remove('d-none');
       } else {
-        this.elements.nextBtn.textContent = 'Next Section';
+        this.elements.nextBtn.innerHTML = 'Next Section<i class="bi bi-arrow-right ms-1"></i>';
       }
     } else {
-      this.elements.nextBtn.textContent = 'Next';
+      this.elements.nextBtn.innerHTML = 'Next<i class="bi bi-arrow-right ms-1"></i>';
       this.elements.submitBtn.classList.add('d-none');
     }
   }
 
   updateMarkButton() {
     const isMarked = this.examState.markedQuestions.has(this.getGlobalQuestionIndex());
-    this.elements.markBtn.textContent = isMarked ? 'Unmark' : 'Mark for Review';
+    this.elements.markBtn.innerHTML = isMarked ? 
+      '<i class="bi bi-bookmark-fill me-1"></i>Unmark' : 
+      '<i class="bi bi-bookmark me-1"></i>Mark';
   }
 
   updateProgressBar() {
@@ -515,20 +520,33 @@ class ExamPage {
   }
 
   moveToNextSection() {
+    // Calculate time spent in current section
+    const timeSpentInSection = EXAM_CONFIG.SECTION_TIME - this.examState.timeRemaining.section;
+    
     // Check if section time is up
     if (this.examState.timeRemaining.section > 0) {
-      if (!confirm('Time is still remaining for this section. Do you want to move to the next section?')) {
+      // Create a custom confirmation dialog that doesn't trigger security warnings
+      const confirmMove = this.showSectionMoveConfirmation();
+      if (!confirmMove) {
         return;
       }
     }
 
+    // Update total time remaining by subtracting only the time actually spent
+    this.examState.timeRemaining.total -= timeSpentInSection;
+    
+    // Move to next section
     this.examState.currentSection++;
     this.examState.currentQuestion = 0;
     this.examState.timeRemaining.section = EXAM_CONFIG.SECTION_TIME;
+    this.examState.sectionStartTime = Date.now();
 
-    // Reset section timer
+    // Reset section timer with full 15 minutes
     this.components.sectionTimer.reset(EXAM_CONFIG.SECTION_TIME);
     this.components.sectionTimer.start();
+
+    // Update total timer with remaining time
+    this.components.totalTimer.setTime(this.examState.timeRemaining.total);
 
     // Update question navigator for new section
     const newSectionQuestions = this.getCurrentSectionQuestions();
@@ -545,11 +563,87 @@ class ExamPage {
     showAlert(`Moved to ${this.examState.sectionList[this.examState.currentSection]} section`, 'info');
   }
 
+  showSectionMoveConfirmation() {
+    // Create a custom modal instead of using browser confirm to avoid security warnings
+    const modalHtml = `
+      <div class="modal fade" id="sectionMoveModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Move to Next Section</h5>
+            </div>
+            <div class="modal-body">
+              <p>Time is still remaining for this section. Do you want to move to the next section?</p>
+              <p class="text-muted small">Note: Remaining time will be added to your total exam time.</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Stay in Section</button>
+              <button type="button" class="btn btn-primary" id="confirmMoveBtn">Move to Next Section</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Add modal to DOM
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    const modal = new bootstrap.Modal(document.getElementById('sectionMoveModal'));
+    
+    let userChoice = false;
+    
+    // Handle confirmation
+    document.getElementById('confirmMoveBtn').addEventListener('click', () => {
+      userChoice = true;
+      modal.hide();
+    });
+
+    // Clean up modal when hidden
+    document.getElementById('sectionMoveModal').addEventListener('hidden.bs.modal', () => {
+      document.getElementById('sectionMoveModal').remove();
+    });
+
+    modal.show();
+    
+    // Return user choice (this is synchronous for now, but could be made async if needed)
+    return new Promise((resolve) => {
+      document.getElementById('sectionMoveModal').addEventListener('hidden.bs.modal', () => {
+        resolve(userChoice);
+      });
+    });
+  }
+
   handleSectionTimeUp() {
     showAlert('Section time is up! Moving to next section.', 'warning');
     
     if (this.examState.currentSection < this.examState.sectionList.length - 1) {
-      this.moveToNextSection();
+      // Calculate time spent and update total time
+      const timeSpentInSection = EXAM_CONFIG.SECTION_TIME;
+      this.examState.timeRemaining.total -= timeSpentInSection;
+      
+      this.examState.currentSection++;
+      this.examState.currentQuestion = 0;
+      this.examState.timeRemaining.section = EXAM_CONFIG.SECTION_TIME;
+      this.examState.sectionStartTime = Date.now();
+
+      // Reset section timer
+      this.components.sectionTimer.reset(EXAM_CONFIG.SECTION_TIME);
+      this.components.sectionTimer.start();
+
+      // Update total timer
+      this.components.totalTimer.setTime(this.examState.timeRemaining.total);
+
+      // Update question navigator for new section
+      const newSectionQuestions = this.getCurrentSectionQuestions();
+      this.components.questionNavigator = new QuestionNavigator('questionNavigator', {
+        questions: newSectionQuestions,
+        currentQuestion: 0,
+        answers: this.examState.answers[this.examState.currentSection] || {},
+        markedQuestions: this.examState.markedQuestions,
+        onQuestionClick: (questionIndex) => this.navigateToQuestion(questionIndex)
+      });
+      this.components.questionNavigator.init();
+
+      this.showCurrentQuestion();
     } else {
       this.submitExam();
     }
@@ -562,10 +656,18 @@ class ExamPage {
 
   async submitExam() {
     try {
-      if (!confirm('Are you sure you want to submit the exam? This action cannot be undone.')) {
+      // Prevent multiple submissions
+      if (this.examState.isSubmitting) {
         return;
       }
 
+      // Create a custom confirmation modal instead of browser confirm
+      const shouldSubmit = await this.showSubmitConfirmation();
+      if (!shouldSubmit) {
+        return;
+      }
+
+      this.examState.isSubmitting = true;
       showLoader(true);
       this.examState.isActive = false;
 
@@ -608,17 +710,119 @@ class ExamPage {
       }
 
       showLoader(false);
-      showAlert('Exam submitted successfully! Results will be available to your counselor.', 'success');
-
-      // Redirect to login page after a delay
-      setTimeout(() => {
-        window.location.href = ROUTES.LOGIN;
-      }, 3000);
+      
+      // Show success modal instead of alert
+      this.showSubmissionSuccessModal(score);
 
     } catch (error) {
       console.error('Error submitting exam:', error);
       showLoader(false);
+      this.examState.isSubmitting = false;
       showAlert('Failed to submit exam. Please try again.', 'danger');
+    }
+  }
+
+  showSubmitConfirmation() {
+    return new Promise((resolve) => {
+      const modalHtml = `
+        <div class="modal fade" id="submitConfirmModal" tabindex="-1" data-bs-backdrop="static">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Submit Exam</h5>
+              </div>
+              <div class="modal-body">
+                <p>Are you sure you want to submit the exam?</p>
+                <p class="text-warning small"><i class="bi bi-exclamation-triangle me-1"></i>This action cannot be undone.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="confirmSubmitBtn">
+                  <i class="bi bi-check-circle me-1"></i>Submit Exam
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+      const modal = new bootstrap.Modal(document.getElementById('submitConfirmModal'));
+      
+      document.getElementById('confirmSubmitBtn').addEventListener('click', () => {
+        modal.hide();
+        resolve(true);
+      });
+
+      document.getElementById('submitConfirmModal').addEventListener('hidden.bs.modal', () => {
+        document.getElementById('submitConfirmModal').remove();
+        resolve(false);
+      });
+
+      modal.show();
+    });
+  }
+
+  showSubmissionSuccessModal(score) {
+    const modalHtml = `
+      <div class="modal fade" id="submissionSuccessModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+              <h5 class="modal-title">
+                <i class="bi bi-check-circle me-2"></i>Exam Submitted Successfully!
+              </h5>
+            </div>
+            <div class="modal-body text-center">
+              <div class="mb-4">
+                <i class="bi bi-trophy text-warning" style="font-size: 3rem;"></i>
+              </div>
+              <h4 class="mb-3">Your Score: ${score.correct}/${score.total}</h4>
+              <h5 class="mb-4 text-primary">${score.percentage.toFixed(1)}%</h5>
+              <p class="text-muted">Your results have been saved and will be available to your counselor.</p>
+              <p class="text-muted">You will be redirected to the login page in <span id="countdown">5</span> seconds.</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+              <button type="button" class="btn btn-primary" id="exitNowBtn">
+                <i class="bi bi-box-arrow-right me-1"></i>Exit Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    const modal = new bootstrap.Modal(document.getElementById('submissionSuccessModal'));
+    
+    // Countdown timer
+    let countdown = 5;
+    const countdownElement = document.getElementById('countdown');
+    const countdownInterval = setInterval(() => {
+      countdown--;
+      countdownElement.textContent = countdown;
+      if (countdown <= 0) {
+        clearInterval(countdownInterval);
+        this.exitExam();
+      }
+    }, 1000);
+
+    // Exit now button
+    document.getElementById('exitNowBtn').addEventListener('click', () => {
+      clearInterval(countdownInterval);
+      this.exitExam();
+    });
+
+    modal.show();
+  }
+
+  async exitExam() {
+    try {
+      await AuthService.logout();
+      window.location.href = ROUTES.LOGIN;
+    } catch (error) {
+      console.error('Error during logout:', error);
+      window.location.href = ROUTES.LOGIN;
     }
   }
 
@@ -684,6 +888,11 @@ class ExamPage {
   }
 
   handleSecurityViolation(reason) {
+    // Only count as violation if it's not from our custom modals
+    if (reason.includes('Window focus lost') && document.querySelector('.modal.show')) {
+      return; // Don't count modal interactions as violations
+    }
+
     this.examState.warningCount++;
     showAlert(`Warning ${this.examState.warningCount}/${EXAM_CONFIG.MAX_WARNINGS}: ${reason}`, 'warning');
 
@@ -695,14 +904,17 @@ class ExamPage {
 
   updateNetworkStatus() {
     const isOnline = navigator.onLine;
-    this.elements.networkStatus.textContent = isOnline ? 'Online' : 'Offline';
-    this.elements.networkStatus.className = `status-indicator ${isOnline ? 'online' : 'offline'}`;
+    this.elements.networkStatus.innerHTML = isOnline ? 
+      '<i class="bi bi-wifi me-1"></i>Online' : 
+      '<i class="bi bi-wifi-off me-1"></i>Offline';
+    this.elements.networkStatus.className = `badge ${isOnline ? 'bg-success' : 'bg-danger'}`;
   }
 
   async handleLogout() {
     try {
-      if (this.examState.isActive) {
-        if (!confirm('Are you sure you want to logout? Your exam progress will be saved.')) {
+      if (this.examState.isActive && !this.examState.isSubmitting) {
+        const shouldLogout = await this.showLogoutConfirmation();
+        if (!shouldLogout) {
           return;
         }
         await this.saveExamState();
@@ -714,6 +926,47 @@ class ExamPage {
       console.error('Error during logout:', error);
       showAlert('Error during logout. Please try again.', 'danger');
     }
+  }
+
+  showLogoutConfirmation() {
+    return new Promise((resolve) => {
+      const modalHtml = `
+        <div class="modal fade" id="logoutConfirmModal" tabindex="-1" data-bs-backdrop="static">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Logout Confirmation</h5>
+              </div>
+              <div class="modal-body">
+                <p>Are you sure you want to logout?</p>
+                <p class="text-info small">Your exam progress will be saved.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmLogoutBtn">
+                  <i class="bi bi-box-arrow-right me-1"></i>Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+      const modal = new bootstrap.Modal(document.getElementById('logoutConfirmModal'));
+      
+      document.getElementById('confirmLogoutBtn').addEventListener('click', () => {
+        modal.hide();
+        resolve(true);
+      });
+
+      document.getElementById('logoutConfirmModal').addEventListener('hidden.bs.modal', () => {
+        document.getElementById('logoutConfirmModal').remove();
+        resolve(false);
+      });
+
+      modal.show();
+    });
   }
 
   cleanup() {
@@ -732,12 +985,12 @@ class ExamPage {
 
 // Initialize exam page when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-  new ExamPage();
+  window.examPage = new ExamPage();
 });
 
 // Cleanup on page unload
 window.addEventListener('beforeunload', (e) => {
-  if (window.examPage && window.examPage.examState.isActive) {
+  if (window.examPage && window.examPage.examState.isActive && !window.examPage.examState.isSubmitting) {
     e.preventDefault();
     e.returnValue = 'Are you sure you want to leave? Your exam progress will be lost.';
     return e.returnValue;

@@ -41,6 +41,7 @@ export class Timer extends BaseComponent {
   reset(newTime = this.initialTime) {
     this.stop();
     this.currentTime = newTime;
+    this.initialTime = newTime;
     this.updateDisplay();
   }
 
@@ -48,11 +49,19 @@ export class Timer extends BaseComponent {
     if (!this.container) return;
     
     const timeString = formatTime(this.currentTime);
-    const isWarning = this.currentTime <= this.warningThreshold;
+    const isWarning = this.currentTime <= this.warningThreshold && this.currentTime > 60;
+    const isDanger = this.currentTime <= 60;
+    
+    let badgeClass = 'bg-primary';
+    if (isDanger) {
+      badgeClass = 'bg-danger';
+    } else if (isWarning) {
+      badgeClass = 'bg-warning text-dark';
+    }
     
     this.container.innerHTML = `
-      <span class="badge ${isWarning ? 'bg-danger' : 'bg-warning'} timer-badge">
-        ${this.label}: ${timeString}
+      <span class="badge ${badgeClass} timer-badge ${isDanger ? 'timer-danger' : ''}">
+        <i class="bi bi-clock me-1"></i>${this.label}: ${timeString}
       </span>
     `;
   }
