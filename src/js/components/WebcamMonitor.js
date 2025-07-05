@@ -56,7 +56,7 @@ export class WebcamMonitor extends BaseComponent {
     this.container.innerHTML = `
       <div class="webcam-container webcam-error">
         <div class="alert alert-danger m-0">
-          <i class="fas fa-exclamation-triangle"></i>
+          <i class="bi bi-exclamation-triangle"></i>
           <small>${message}</small>
         </div>
       </div>
