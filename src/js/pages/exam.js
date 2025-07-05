@@ -25,7 +25,8 @@ class ExamPage {
       questionsBySection: {},
       sectionList: [],
       isActive: false,
-      warningCount: 0
+      warningCount: 0,
+      webcamReady: false
     };
 
     this.components = {
@@ -67,7 +68,12 @@ class ExamPage {
       await this.loadExamData();
       
       // Initialize components
-      this.initializeComponents();
+      await this.initializeComponents();
+      
+      // Check webcam status and handle accordingly
+      if (!this.examState.webcamReady) {
+        this.handleWebcamFailure();
+      }
       
       // Setup event listeners
       this.setupEventListeners();
@@ -166,7 +172,7 @@ class ExamPage {
     });
   }
 
-  initializeComponents() {
+  async initializeComponents() {
     // Initialize Question Navigator
     const currentSectionQuestions = this.getCurrentSectionQuestions();
     this.components.questionNavigator = new QuestionNavigator('questionNavigator', {
@@ -200,18 +206,35 @@ class ExamPage {
       snapshotInterval: EXAM_CONFIG.SNAPSHOT_INTERVAL
     });
 
-    // Initialize all components
-    Object.values(this.components).forEach(component => {
-      if (component && typeof component.init === 'function') {
-        component.init();
-      }
-    });
+    // Initialize components and check webcam status
+    this.components.questionNavigator.init();
+    this.components.sectionTimer.init();
+    this.components.totalTimer.init();
+    
+    // Await webcam initialization and store the result
+    this.examState.webcamReady = await this.components.webcamMonitor.init();
+  }
+
+  handleWebcamFailure() {
+    // Disable the agree checkbox and start exam button
+    if (this.elements.agreeCheckbox) {
+      this.elements.agreeCheckbox.disabled = true;
+      this.elements.agreeCheckbox.checked = false;
+    }
+    
+    if (this.elements.startExamBtn) {
+      this.elements.startExamBtn.disabled = true;
+    }
+
+    // Show prominent error message
+    showAlert('Webcam access is required to start the exam. Please grant camera permissions and refresh the page.', 'danger');
   }
 
   setupEventListeners() {
     // Guidelines modal
     this.elements.agreeCheckbox?.addEventListener('change', (e) => {
-      this.elements.startExamBtn.disabled = !e.target.checked;
+      // Only enable start button if webcam is ready and checkbox is checked
+      this.elements.startExamBtn.disabled = !e.target.checked || !this.examState.webcamReady;
     });
 
     this.elements.startExamBtn?.addEventListener('click', () => this.startExam());
@@ -279,6 +302,12 @@ class ExamPage {
 
   async startExam() {
     try {
+      // Explicitly check webcam readiness before starting
+      if (!this.examState.webcamReady) {
+        showAlert('Cannot start exam: Webcam access is required.', 'danger');
+        return;
+      }
+
       this.examState.isActive = true;
       
       // Hide guidelines modal

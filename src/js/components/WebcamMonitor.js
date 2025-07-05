@@ -15,9 +15,11 @@ export class WebcamMonitor extends BaseComponent {
       await this.setupWebcam();
       this.render();
       this.startSnapshotCapture();
+      return true; // Success
     } catch (error) {
       console.error('Error initializing webcam:', error);
       this.renderError('Webcam access is required for the exam.');
+      return false; // Failure
     }
   }
 
