@@ -260,6 +260,41 @@ class ExamPage {
 
     // Exam security events
     this.setupSecurityListeners();
+
+    // Option card visual feedback
+    this.setupOptionCardListeners();
+  }
+
+  setupOptionCardListeners() {
+    const optionCards = document.querySelectorAll('.option-card');
+    
+    optionCards.forEach(card => {
+      const radio = card.querySelector('input[type="radio"]');
+      
+      card.addEventListener('click', () => {
+        // Remove selected class from all cards
+        optionCards.forEach(c => c.classList.remove('selected'));
+        
+        // Check the radio button
+        radio.checked = true;
+        
+        // Add selected class to clicked card
+        card.classList.add('selected');
+        
+        // Trigger change event
+        radio.dispatchEvent(new Event('change'));
+      });
+      
+      radio.addEventListener('change', () => {
+        // Remove selected class from all cards
+        optionCards.forEach(c => c.classList.remove('selected'));
+        
+        // Add selected class to selected card
+        if (radio.checked) {
+          card.classList.add('selected');
+        }
+      });
+    });
   }
 
   setupSecurityListeners() {
@@ -284,14 +319,14 @@ class ExamPage {
 
     // Tab visibility change
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden && this.examState.isActive) {
+      if (document.hidden && this.examState.isActive && !document.querySelector('.modal.show')) {
         this.handleSecurityViolation('Tab switching detected');
       }
     });
 
     // Window focus/blur
     window.addEventListener('blur', () => {
-      if (this.examState.isActive) {
+      if (this.examState.isActive && !document.querySelector('.modal.show')) {
         this.handleSecurityViolation('Window focus lost');
       }
     });
@@ -348,13 +383,24 @@ class ExamPage {
 
     // Update options
     const options = ['A', 'B', 'C', 'D'];
-    options.forEach(option => {
+    const optionCards = document.querySelectorAll('.option-card');
+    
+    options.forEach((option, index) => {
       const input = document.getElementById(`option${option}`);
       const label = document.getElementById(`label${option}`);
+      const card = optionCards[index];
       
-      if (input && label) {
+      if (input && label && card) {
         label.textContent = question.options[option];
-        input.checked = this.getCurrentAnswer() === option;
+        const isSelected = this.getCurrentAnswer() === option;
+        input.checked = isSelected;
+        
+        // Update visual state
+        if (isSelected) {
+          card.classList.add('selected');
+        } else {
+          card.classList.remove('selected');
+        }
       }
     });
 
@@ -467,8 +513,11 @@ class ExamPage {
       delete this.examState.answers[this.examState.currentSection][this.examState.currentQuestion];
     }
     
-    // Clear form
+    // Clear form and visual state
     this.elements.optionsForm.reset();
+    document.querySelectorAll('.option-card').forEach(card => {
+      card.classList.remove('selected');
+    });
     
     this.updateQuestionNavigator();
     this.updateProgressBar();
@@ -519,15 +568,15 @@ class ExamPage {
     }
   }
 
-  moveToNextSection() {
+  async moveToNextSection() {
     // Calculate time spent in current section
     const timeSpentInSection = EXAM_CONFIG.SECTION_TIME - this.examState.timeRemaining.section;
     
     // Check if section time is up
     if (this.examState.timeRemaining.section > 0) {
       // Create a custom confirmation dialog that doesn't trigger security warnings
-      const confirmMove = this.showSectionMoveConfirmation();
-      if (!confirmMove) {
+      const shouldMove = await this.showSectionMoveConfirmation();
+      if (!shouldMove) {
         return;
       }
     }
@@ -564,51 +613,46 @@ class ExamPage {
   }
 
   showSectionMoveConfirmation() {
-    // Create a custom modal instead of using browser confirm to avoid security warnings
-    const modalHtml = `
-      <div class="modal fade" id="sectionMoveModal" tabindex="-1" data-bs-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Move to Next Section</h5>
-            </div>
-            <div class="modal-body">
-              <p>Time is still remaining for this section. Do you want to move to the next section?</p>
-              <p class="text-muted small">Note: Remaining time will be added to your total exam time.</p>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Stay in Section</button>
-              <button type="button" class="btn btn-primary" id="confirmMoveBtn">Move to Next Section</button>
+    return new Promise((resolve) => {
+      const modalHtml = `
+        <div class="modal fade" id="sectionMoveModal" tabindex="-1" data-bs-backdrop="static">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Move to Next Section</h5>
+              </div>
+              <div class="modal-body">
+                <p>Time is still remaining for this section. Do you want to move to the next section?</p>
+                <p class="text-muted small">Note: Remaining time will be added to your total exam time.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Stay in Section</button>
+                <button type="button" class="btn btn-primary" id="confirmMoveBtn">Move to Next Section</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    `;
+      `;
 
-    // Add modal to DOM
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
-    const modal = new bootstrap.Modal(document.getElementById('sectionMoveModal'));
-    
-    let userChoice = false;
-    
-    // Handle confirmation
-    document.getElementById('confirmMoveBtn').addEventListener('click', () => {
-      userChoice = true;
-      modal.hide();
-    });
+      // Add modal to DOM
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+      const modal = new bootstrap.Modal(document.getElementById('sectionMoveModal'));
+      
+      let userChoice = false;
+      
+      // Handle confirmation
+      document.getElementById('confirmMoveBtn').addEventListener('click', () => {
+        userChoice = true;
+        modal.hide();
+      });
 
-    // Clean up modal when hidden
-    document.getElementById('sectionMoveModal').addEventListener('hidden.bs.modal', () => {
-      document.getElementById('sectionMoveModal').remove();
-    });
-
-    modal.show();
-    
-    // Return user choice (this is synchronous for now, but could be made async if needed)
-    return new Promise((resolve) => {
+      // Clean up modal when hidden
       document.getElementById('sectionMoveModal').addEventListener('hidden.bs.modal', () => {
+        document.getElementById('sectionMoveModal').remove();
         resolve(userChoice);
       });
+
+      modal.show();
     });
   }
 
