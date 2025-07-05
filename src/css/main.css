@@ -1,0 +1,470 @@
+/* Main CSS Entry Point */
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* CSS Variables */
+:root {
+  /* Colors */
+  --primary: #0d6efd;
+  --primary-dark: #0b5ed7;
+  --secondary: #6c757d;
+  --success: #198754;
+  --danger: #dc3545;
+  --warning: #ffc107;
+  --info: #0dcaf0;
+  --light: #f8f9fa;
+  --dark: #212529;
+  
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 3rem;
+  
+  /* Border radius */
+  --border-radius: 0.375rem;
+  --border-radius-lg: 0.5rem;
+  
+  /* Shadows */
+  --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+  
+  /* Transitions */
+  --transition: all 0.15s ease-in-out;
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--dark);
+  background-color: var(--light);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+.display-4 {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.display-5 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.lead {
+  font-size: 1.125rem;
+  font-weight: 400;
+}
+
+/* Buttons */
+.btn {
+  font-weight: 500;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+  border: 1px solid transparent;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.btn-lg {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Cards */
+.card {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.card:hover {
+  box-shadow: var(--shadow);
+}
+
+.card-header {
+  background-color: rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  padding: 1rem 1.25rem;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+/* Forms */
+.form-control, .form-select {
+  border-radius: var(--border-radius);
+  border: 1px solid #ced4da;
+  transition: var(--transition);
+  font-size: 0.875rem;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.form-check {
+  transition: var(--transition);
+}
+
+.form-check:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.form-check-input:checked {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+/* Tables */
+.table {
+  font-size: 0.875rem;
+}
+
+.table th {
+  border-top: none;
+  font-weight: 600;
+  color: var(--dark);
+  background-color: var(--light);
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Navigation */
+.navbar {
+  padding: 0.75rem 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.navbar-brand {
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.nav-link {
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  min-height: 60vh;
+}
+
+.min-vh-50 {
+  min-height: 50vh;
+}
+
+/* Exam Specific Styles */
+.exam-body {
+  background-color: #f8f9fa;
+  overflow: hidden;
+}
+
+.exam-content {
+  height: calc(100vh - 76px);
+  padding: 1rem;
+}
+
+.question-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--dark);
+}
+
+.question-navigator-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.question-nav-btn {
+  aspect-ratio: 1;
+  border: 1px solid #dee2e6;
+  background: white;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  transition: var(--transition);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.question-nav-btn:hover {
+  background-color: #e9ecef;
+}
+
+.question-nav-btn.current {
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.question-nav-btn.answered {
+  background-color: var(--success);
+  color: white;
+  border-color: var(--success);
+}
+
+.question-nav-btn.marked {
+  background-color: var(--warning);
+  color: var(--dark);
+  border-color: var(--warning);
+}
+
+.question-nav-btn.not-visited {
+  background-color: white;
+  color: var(--secondary);
+  border-color: #dee2e6;
+}
+
+/* Timer Styles */
+.timer-badge {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--border-radius);
+}
+
+/* Webcam Styles */
+.webcam-container {
+  width: 200px;
+  height: 150px;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  border: 2px solid #dee2e6;
+  background-color: #f8f9fa;
+  position: relative;
+}
+
+.webcam-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Loading States */
+.spinner-border {
+  width: 2rem;
+  height: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 991.98px) {
+  .exam-content {
+    height: auto;
+    min-height: calc(100vh - 76px);
+  }
+  
+  .question-navigator-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .webcam-container {
+    width: 150px;
+    height: 112px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .display-4 {
+    font-size: 2rem;
+  }
+  
+  .display-5 {
+    font-size: 1.75rem;
+  }
+  
+  .question-navigator-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .webcam-container {
+    width: 120px;
+    height: 90px;
+  }
+  
+  .timer-container {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .card-body {
+    padding: 1rem;
+  }
+  
+  .btn-lg {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.9375rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  .exam-content {
+    padding: 0.75rem;
+  }
+  
+  .card-body {
+    padding: 0.75rem;
+  }
+  
+  .question-navigator-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.375rem;
+  }
+  
+  .question-nav-btn {
+    font-size: 0.8125rem;
+  }
+}
+
+/* Utilities */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shadow-sm {
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.shadow {
+  box-shadow: var(--shadow) !important;
+}
+
+.shadow-lg {
+  box-shadow: var(--shadow-lg) !important;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .card {
+    border: 1px solid #000 !important;
+    box-shadow: none !important;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .card {
+    border-color: #000;
+  }
+  
+  .btn {
+    border-width: 2px;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus Management */
+.visually-hidden-focusable:not(:focus):not(:focus-within) {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
